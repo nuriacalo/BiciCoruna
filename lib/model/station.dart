@@ -40,26 +40,35 @@ class Station {
   });
 
   factory Station.fromJson(Map<String, dynamic> json) {
+    int postCode;
+    if (json['post_code'] is String) {
+      postCode = int.tryParse(json['post_code']) ?? 0;
+    } else if (json['post_code'] is int) {
+      postCode = json['post_code'];
+    } else {
+      postCode = 0;
+    }
+
     return Station(
-      id: json['station_id'],
-      name: json['name'],
-      physical_configuration: json['physical_configuration'] ?? '',
-      lat: (json['lat'] as num).toDouble(),
-      lon: (json['lon'] as num).toDouble(),
-      altitude: (json['altitude'] as num).toDouble(),
-      address: json['address'],
-      post_code: (json['post_code'] as num).toInt(),
-      capacity: (json['capacity'] as num).toInt(),
-      is_charging_station: json['is_charging_station'],
-      nearby_distance: json['nearby_distance'],
-      num_bikes_available: (json['num_bikes_available'] as num).toInt(),
-      num_bikes_disabled: (json['num_bikes_disabled'] as num).toInt(),
-      status: json['status'],
-      is_renting: json['is_renting'],
-      is_returning: json['is_returning'],
-      bikes: (json['bikes'] as List)
-          .map((bikeJson) => Bike.fromJson(bikeJson))
-          .toList(),
+      id: json['station_id'] ?? '',
+      name: json['name'] ?? 'Unknown Station',
+      lat: (json['lat'] as num?)?.toDouble() ?? 0.0,
+      lon: (json['lon'] as num?)?.toDouble() ?? 0.0,
+      altitude: (json['altitude'] as num?)?.toDouble() ?? 0.0,
+      address: json['address'] ?? '',
+      post_code: postCode,
+      capacity: json['capacity'] ?? 0,
+      is_charging_station: json['is_charging_station'] ?? false,
+      nearby_distance: json['nearby_distance']?.toString() ?? '',
+      num_bikes_available: json['num_bikes_available'] ?? 0,
+      num_bikes_disabled: json['num_bikes_disabled'] ?? 0,
+      status: json['status'] ?? 'UNKNOWN',
+      is_renting: json['is_renting'] ?? false,
+      is_returning: json['is_returning'] ?? false,
+      bikes: (json['bikes'] as List<dynamic>?)
+              ?.map((bikeJson) => Bike.fromJson(bikeJson as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 }

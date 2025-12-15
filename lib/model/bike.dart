@@ -6,10 +6,13 @@ class Bike {
   Bike({required this.id, required this.model, required this.count});
 
   factory Bike.fromJson(Map<String, dynamic> json) {
-    return Bike(
-      id: (json['id'] as num).toInt(),
-      model: json['model'],
-      count: (json['count'] as num).toInt(),
-    );
+    return switch (json) {
+      {'id': final id, 'model': final model, 'count': final count} => Bike(
+        id: id,
+        model: model,
+        count: count,
+      ),
+      _ => throw const FormatException('Error al parsear Bike'),
+    };
   }
 }
