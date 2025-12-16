@@ -46,9 +46,9 @@ class Stationviewmodel {
         stations.add(Station.fromJson(mergedJson));
       }
     }
-    // if (stations.isEmpty) {
-    //   throw Exception('No stations found after merging data');
-    // }
+    if (stations.isEmpty) {
+      throw Exception('No stations found after merging data');
+    }
     return stations;
   }
 }
