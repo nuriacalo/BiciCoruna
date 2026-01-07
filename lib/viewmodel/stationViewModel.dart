@@ -5,9 +5,12 @@ import '../model/station.dart';
 class Stationviewmodel {
   static const String _base =
       'https://acoruna.publicbikesystem.net/customer/gbfs/v2/gl';
+  static const Duration _timeout = Duration(seconds: 8);
 
   Future<Map<String, dynamic>> getInfoJson() async {
-    final res = await http.get(Uri.parse('$_base/station_information'));
+    final res = await http
+        .get(Uri.parse('$_base/station_information'))
+        .timeout(_timeout);
     if (res.statusCode == 200) {
       return jsonDecode(res.body) as Map<String, dynamic>;
     } else {
@@ -16,7 +19,9 @@ class Stationviewmodel {
   }
 
   Future<Map<String, dynamic>> getStatusJson() async {
-    final res = await http.get(Uri.parse('$_base/station_status'));
+    final res = await http
+        .get(Uri.parse('$_base/station_status'))
+        .timeout(_timeout);
     if (res.statusCode == 200) {
       return jsonDecode(res.body) as Map<String, dynamic>;
     } else {
@@ -31,20 +36,19 @@ class Stationviewmodel {
     final statusSt = (status['data']['stations'] as List)
         .cast<Map<String, dynamic>>();
 
-    final stations = <Station>[];
+    // Index status by station_id to avoid O(n^2) scans.
+    final statusById = <String, Map<String, dynamic>>{
+      for (final s in statusSt)
+        if (s['station_id'] != null) s['station_id']: s,
+    };
 
+    final stations = <Station>[];
     for (final infoStation in infoSt) {
-      Map<String, dynamic>? statusStation;
-      for (final s in statusSt) {
-        if (s['station_id'] == infoStation['station_id']) {
-          statusStation = s;
-          break;
-        }
-      }
-      if (statusStation != null) {
-        final mergedJson = {...infoStation, ...statusStation};
-        stations.add(Station.fromJson(mergedJson));
-      }
+      final id = infoStation['station_id'];
+      final statusStation = statusById[id];
+      if (statusStation == null) continue;
+      final mergedJson = {...infoStation, ...statusStation};
+      stations.add(Station.fromJson(mergedJson));
     }
     if (stations.isEmpty) {
       throw Exception('No stations found after merging data');

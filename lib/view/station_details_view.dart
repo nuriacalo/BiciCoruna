@@ -23,7 +23,7 @@ class StationDetailsView extends StatelessWidget {
               height: 180,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: theme.primaryColor.withValues(alpha: 0.1),
+                color: theme.primaryColor.withOpacity(0.1),
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
@@ -61,13 +61,13 @@ class StationDetailsView extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: station.isRenting
-                              ? Colors.green.withValues(alpha: 0.1)
-                              : Colors.red.withValues(alpha: 0.1),
+                              ? Colors.green.withOpacity(0.1)
+                              : Colors.red.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: station.isRenting
-                                ? Colors.green.withValues(alpha: 0.1)
-                                : Colors.red.withValues(alpha: 0.1),
+                                ? Colors.green
+                                : Colors.red,
                             width: 1,
                           ),
                         ),
@@ -75,8 +75,8 @@ class StationDetailsView extends StatelessWidget {
                           station.isRenting ? 'Disponible' : 'No disponible',
                           style: TextStyle(
                             color: station.isRenting
-                                ? Colors.green.withValues(alpha: 0.1)
-                                : Colors.red.withValues(alpha: 0.1),
+                                ? Colors.green
+                                : Colors.red,
                             fontWeight: FontWeight.w500,
                             fontSize: 13,
                           ),
@@ -135,10 +135,10 @@ class StationDetailsView extends StatelessWidget {
                             backgroundColor: Colors.grey[200],
                             valueColor: AlwaysStoppedAnimation<Color>(
                               availability > 0.5
-                                  ? Colors.green.withValues(alpha: 0.1)
+                                  ? Colors.green
                                   : availability > 0.2
-                                  ? Colors.orange.withValues(alpha: 0.1)
-                                  : Colors.red.withValues(alpha: 0.1),
+                                  ? Colors.orange
+                                  : Colors.red,
                             ),
                             minHeight: 8,
                             borderRadius: BorderRadius.circular(4),
@@ -154,8 +154,8 @@ class StationDetailsView extends StatelessWidget {
                                 Colors.blue,
                               ),
                               _buildInfoItem(
-                                Icons.park,
-                                'Anclajes',
+                                Icons.local_parking,
+                                'Plazas libres',
                                 '${station.capacity - station.numBikesAvailable}',
                                 Colors.orange,
                               ),
@@ -217,31 +217,6 @@ class StationDetailsView extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
-
-                  // Botón de acción
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.directions_bike),
-                      label: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        child: Text(
-                          'Ver en el mapa',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () {
-                        // Acción para ver en el mapa
-                      },
-                    ),
-                  ),
-
                   const SizedBox(height: 16),
                 ],
               ),
@@ -263,7 +238,7 @@ class StationDetailsView extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: color.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 20),

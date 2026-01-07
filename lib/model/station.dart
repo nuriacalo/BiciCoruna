@@ -3,50 +3,72 @@ import 'bike.dart';
 class Station {
   final String id;
   final String name;
-  String physical_configuration;
+  String physicalConfiguration;
   final double lat;
   final double lon;
   final double altitude;
   final String address;
-  final int post_code;
+  final int postCode;
   final int capacity;
-  final bool is_charging_station;
-  final String nearby_distance;
-  final int num_bikes_available;
-  final int num_bikes_disabled;
+  final bool isChargingStation;
+  final String nearbyDistance;
+  final int numBikesAvailable;
+  final int numBikesDisabled;
   final String status;
-  final bool is_renting;
-  final bool is_returning;
+  final bool isRenting;
+  final bool isReturning;
   final List<Bike> bikes;
 
   Station({
     required this.id,
     required this.name,
-    this.physical_configuration = '',
+    this.physicalConfiguration = '',
     required this.lat,
     required this.lon,
     required this.altitude,
     required this.address,
-    required this.post_code,
+    required this.postCode,
     required this.capacity,
-    required this.is_charging_station,
-    required this.nearby_distance,
-    required this.num_bikes_available,
-    required this.num_bikes_disabled,
+    required this.isChargingStation,
+    required this.nearbyDistance,
+    required this.numBikesAvailable,
+    required this.numBikesDisabled,
     required this.status,
-    required this.is_renting,
-    required this.is_returning,
+    required this.isRenting,
+    required this.isReturning,
     required this.bikes,
   });
 
   factory Station.fromJson(Map<String, dynamic> json) {
-    int postCode;
-    if (json['post_code'] is String) {
-      postCode = int.tryParse(json['post_code']) ?? 0;
-    } else if (json['post_code'] is int) {
-      postCode = json['post_code'];
-    } else {
-      postCode = 0;
+    int parseInt(dynamic value) {
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? 0;
+      return 0;
+    }
+
+    final int postCode = parseInt(json['post_code']);
+
+    int available = parseInt(json['num_bikes_available']);
+    int disabled = parseInt(json['num_bikes_disabled']);
+
+    // Some providers only populate num_bikes_available_types; sum it as a fallback.
+    int typesSum = 0;
+    final types = json['num_bikes_available_types'];
+    if (types is Map<String, dynamic>) {
+      for (final v in types.values) {
+        typesSum += parseInt(v);
+      }
+    } else if (types is List) {
+      for (final entry in types) {
+        if (entry is Map<String, dynamic>) {
+          for (final v in entry.values) {
+            typesSum += parseInt(v);
+          }
+        }
+      }
+    }
+    if (available == 0 && typesSum > 0) {
+      available = typesSum;
     }
 
     return Station(
@@ -56,17 +78,20 @@ class Station {
       lon: (json['lon'] as num?)?.toDouble() ?? 0.0,
       altitude: (json['altitude'] as num?)?.toDouble() ?? 0.0,
       address: json['address'] ?? '',
-      post_code: postCode,
-      capacity: json['capacity'] ?? 0,
-      is_charging_station: json['is_charging_station'] ?? false,
-      nearby_distance: json['nearby_distance']?.toString() ?? '',
-      num_bikes_available: json['num_bikes_available'] ?? 0,
-      num_bikes_disabled: json['num_bikes_disabled'] ?? 0,
+      postCode: postCode,
+      capacity: parseInt(json['capacity']),
+      isChargingStation: json['is_charging_station'] ?? false,
+      nearbyDistance: json['nearby_distance']?.toString() ?? '',
+      numBikesAvailable: available,
+      numBikesDisabled: disabled,
       status: json['status'] ?? 'UNKNOWN',
-      is_renting: json['is_renting'] ?? false,
-      is_returning: json['is_returning'] ?? false,
-      bikes: (json['bikes'] as List<dynamic>?)
-              ?.map((bikeJson) => Bike.fromJson(bikeJson as Map<String, dynamic>))
+      isRenting: json['is_renting'] ?? false,
+      isReturning: json['is_returning'] ?? false,
+      bikes:
+          (json['bikes'] as List<dynamic>?)
+              ?.map(
+                (bikeJson) => Bike.fromJson(bikeJson as Map<String, dynamic>),
+              )
               .toList() ??
           [],
     );

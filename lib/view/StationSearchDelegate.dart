@@ -2,9 +2,9 @@ import '../model/station.dart';
 import 'package:flutter/material.dart';
 
 class StationSearchDelegate extends SearchDelegate<Station?> {
-  final List<Station> stationsSearch;
+  final List<Station> stations;
 
-  StationSearchDelegate(this.stationsSearch);
+  StationSearchDelegate(this.stations);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -40,7 +40,7 @@ class StationSearchDelegate extends SearchDelegate<Station?> {
 
   Widget _buildFilteredList() {
     final List<Station> matchQuery = [];
-    for (var station in stationsSearch) {
+    for (var station in stations) {
       if (station.name.toLowerCase().contains(query.toLowerCase())) {
         matchQuery.add(station);
       }
