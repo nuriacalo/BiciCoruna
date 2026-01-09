@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../model/station.dart';
 
 class StationDetailsView extends StatelessWidget {
@@ -12,6 +13,11 @@ class StationDetailsView extends StatelessWidget {
     final availability = station.capacity > 0
         ? station.numBikesAvailable / station.capacity
         : 0.0;
+    final lastUpdate = DateFormat('HH:mm \'del\' dd/MM/yyyy').format(
+        DateTime.fromMillisecondsSinceEpoch(station.lastReported * 1000));
+
+    final mechanicalBikes = station.vehicleTypesAvailable['BIKE'] ?? 0;
+    final electricBikes = station.vehicleTypesAvailable['EBIKE'] ?? 0;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Detalles de la estación')),
@@ -145,18 +151,24 @@ class StationDetailsView extends StatelessWidget {
                           ),
                           const SizedBox(height: 12),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               _buildInfoItem(
-                                Icons.directions_bike,
-                                'Bicicletas',
-                                '${station.numBikesAvailable}',
+                                Icons.pedal_bike,
+                                'Mecánicas',
+                                '$mechanicalBikes',
                                 Colors.blue,
+                              ),
+                              _buildInfoItem(
+                                Icons.electric_bike,
+                                'Eléctricas',
+                                '$electricBikes',
+                                Colors.purple,
                               ),
                               _buildInfoItem(
                                 Icons.local_parking,
                                 'Plazas libres',
-                                '${station.capacity - station.numBikesAvailable}',
+                                '${station.numDocksAvailable}',
                                 Colors.orange,
                               ),
                               _buildInfoItem(
@@ -194,16 +206,24 @@ class StationDetailsView extends StatelessWidget {
                           ),
                           const SizedBox(height: 12),
                           _buildDetailRow(
-                            'Código postal',
-                            station.postCode.toString(),
-                            Icons.numbers,
+                            'Última actualización',
+                            lastUpdate,
+                            Icons.update,
                           ),
                           const Divider(height: 24),
                           _buildDetailRow(
-                            'Bicicletas averiadas',
-                            '${station.numBikesDisabled}',
+                            'Anclajes averiados',
+                            '${station.numDocksDisabled}',
                             Icons.warning_amber,
                           ),
+                          if (station.postCode > 0) ...[
+                            const Divider(height: 24),
+                            _buildDetailRow(
+                              'Código postal',
+                              station.postCode.toString(),
+                              Icons.numbers,
+                            ),
+                          ],
                           if (station.physicalConfiguration.isNotEmpty) ...[
                             const Divider(height: 24),
                             _buildDetailRow(

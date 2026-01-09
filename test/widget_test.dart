@@ -27,4 +27,16 @@ void main() {
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
+
+  group("Validación de tipos de bici", (){
+    test('Tipo de bici válida', () {
+      String tipoBici = 'Eléctrica';
+      expect(['Eléctrica', 'Mecánica', 'Mixta'].contains(tipoBici), isTrue);
+    });
+
+    test('Tipo de bici inválida', () {
+      String tipoBici = 'Híbrida';
+      expect(['Eléctrica', 'Mecánica', 'Mixta'].contains(tipoBici), isFalse);
+    });
+  });
 }

@@ -13,7 +13,11 @@ class Station {
   final bool isChargingStation;
   final String nearbyDistance;
   final int numBikesAvailable;
+  final int numDocksAvailable;
   final int numBikesDisabled;
+  final int numDocksDisabled;
+  final int lastReported;
+  final Map<String, int> vehicleTypesAvailable;
   final String status;
   final bool isRenting;
   final bool isReturning;
@@ -32,7 +36,11 @@ class Station {
     required this.isChargingStation,
     required this.nearbyDistance,
     required this.numBikesAvailable,
+    required this.numDocksAvailable,
     required this.numBikesDisabled,
+    required this.numDocksDisabled,
+    required this.lastReported,
+    required this.vehicleTypesAvailable,
     required this.status,
     required this.isRenting,
     required this.isReturning,
@@ -48,28 +56,20 @@ class Station {
 
     final int postCode = parseInt(json['post_code']);
 
-    int available = parseInt(json['num_bikes_available']);
-    int disabled = parseInt(json['num_bikes_disabled']);
-
-    // Some providers only populate num_bikes_available_types; sum it as a fallback.
-    int typesSum = 0;
-    final types = json['num_bikes_available_types'];
-    if (types is Map<String, dynamic>) {
-      for (final v in types.values) {
-        typesSum += parseInt(v);
-      }
-    } else if (types is List) {
-      for (final entry in types) {
-        if (entry is Map<String, dynamic>) {
-          for (final v in entry.values) {
-            typesSum += parseInt(v);
+    final Map<String, int> vehicleTypesAvailable = {};
+    final vehicleTypesJson = json['vehicle_types_available'];
+    if (vehicleTypesJson is List) {
+      for (final type in vehicleTypesJson) {
+        if (type is Map<String, dynamic>) {
+          final id = type['vehicle_type_id'] as String?;
+          final count = parseInt(type['count']);
+          if (id != null) {
+            vehicleTypesAvailable[id] = count;
           }
         }
       }
     }
-    if (available == 0 && typesSum > 0) {
-      available = typesSum;
-    }
+
 
     return Station(
       id: json['station_id'] ?? '',
@@ -82,17 +82,21 @@ class Station {
       capacity: parseInt(json['capacity']),
       isChargingStation: json['is_charging_station'] ?? false,
       nearbyDistance: json['nearby_distance']?.toString() ?? '',
-      numBikesAvailable: available,
-      numBikesDisabled: disabled,
+      numBikesAvailable: parseInt(json['num_bikes_available']),
+      numDocksAvailable: parseInt(json['num_docks_available']),
+      numBikesDisabled: parseInt(json['num_bikes_disabled']),
+      numDocksDisabled: parseInt(json['num_docks_disabled']),
+      lastReported: parseInt(json['last_reported']),
+      vehicleTypesAvailable: vehicleTypesAvailable,
       status: json['status'] ?? 'UNKNOWN',
       isRenting: json['is_renting'] ?? false,
       isReturning: json['is_returning'] ?? false,
       bikes:
-          (json['bikes'] as List<dynamic>?)
-              ?.map(
-                (bikeJson) => Bike.fromJson(bikeJson as Map<String, dynamic>),
-              )
-              .toList() ??
+      (json['bikes'] as List<dynamic>?)
+          ?.map(
+            (bikeJson) => Bike.fromJson(bikeJson as Map<String, dynamic>),
+      )
+          .toList() ??
           [],
     );
   }

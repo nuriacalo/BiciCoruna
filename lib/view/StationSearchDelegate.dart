@@ -41,7 +41,8 @@ class StationSearchDelegate extends SearchDelegate<Station?> {
   Widget _buildFilteredList() {
     final List<Station> matchQuery = [];
     for (var station in stations) {
-      if (station.name.toLowerCase().contains(query.toLowerCase())) {
+      if (station.name.toLowerCase().contains(query.toLowerCase()) ||
+          station.address.toLowerCase().contains(query.toLowerCase())) {
         matchQuery.add(station);
       }
     }
