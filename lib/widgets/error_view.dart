@@ -1,18 +1,11 @@
+// lib/widgets/error_view.dart
 import 'package:flutter/material.dart';
 
 class ErrorView extends StatelessWidget {
   final String message;
-  final String? details;
   final VoidCallback? onRetry;
-  final IconData? icon;
 
-  const ErrorView({
-    Key? key,
-    required this.message,
-    this.details,
-    this.onRetry,
-    this.icon,
-  }) : super(key: key);
+  const ErrorView({super.key, required this.message, this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -22,23 +15,15 @@ class ErrorView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon ?? Icons.error_outline, size: 64, color: Colors.red),
+            const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 16),
             Text(
               message,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
-            if (details != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                details!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey),
-              ),
-            ],
             if (onRetry != null) ...[
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: onRetry,
                 child: const Text('Reintentar'),

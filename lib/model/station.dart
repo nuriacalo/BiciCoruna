@@ -23,6 +23,38 @@ class Station {
   final bool isReturning;
   final List<Bike> bikes;
 
+  // Getters para acceder fácilmente a los diferentes tipos de bicis
+  List<Bike> get electricBikes =>
+      bikes.where((bike) => bike.type == 'Eléctrica').toList();
+  List<Bike> get mechanicalBikes =>
+      bikes.where((bike) => bike.type == 'Mecánica').toList();
+
+  int get totalElectricBikes {
+    if (bikes.isNotEmpty) {
+      return electricBikes.fold(0, (sum, bike) => sum + bike.count);
+    }
+
+    var sum = 0;
+    for (final e in vehicleTypesAvailable.entries) {
+      final b = Bike.fromType(e.key, e.value);
+      if (b.type == 'Eléctrica') sum += b.count;
+    }
+    return sum;
+  }
+
+  int get totalMechanicalBikes {
+    if (bikes.isNotEmpty) {
+      return mechanicalBikes.fold(0, (sum, bike) => sum + bike.count);
+    }
+
+    var sum = 0;
+    for (final e in vehicleTypesAvailable.entries) {
+      final b = Bike.fromType(e.key, e.value);
+      if (b.type == 'Mecánica') sum += b.count;
+    }
+    return sum;
+  }
+
   Station({
     required this.id,
     required this.name,
@@ -47,7 +79,11 @@ class Station {
     required this.bikes,
   });
 
-  factory Station.fromJson(Map<String, dynamic> json) {
+  factory Station.fromJson(
+    Map<String, dynamic> json, {
+    Map<String, String>? propulsionByVehicleTypeId,
+    Map<String, String>? formFactorByVehicleTypeId,
+  }) {
     int parseInt(dynamic value) {
       if (value is int) return value;
       if (value is String) return int.tryParse(value) ?? 0;
@@ -70,6 +106,20 @@ class Station {
       }
     }
 
+    // Convertir vehicleTypesAvailable a lista de Bikes
+    final bikes = vehicleTypesAvailable.entries
+        .where((e) {
+          final formFactor = formFactorByVehicleTypeId?[e.key];
+          return formFactor == null || formFactor == 'bicycle';
+        })
+        .map(
+          (e) => Bike.fromType(
+            e.key,
+            e.value,
+            propulsionType: propulsionByVehicleTypeId?[e.key],
+          ),
+        )
+        .toList();
 
     return Station(
       id: json['station_id'] ?? '',
@@ -91,13 +141,7 @@ class Station {
       status: json['status'] ?? 'UNKNOWN',
       isRenting: json['is_renting'] ?? false,
       isReturning: json['is_returning'] ?? false,
-      bikes:
-      (json['bikes'] as List<dynamic>?)
-          ?.map(
-            (bikeJson) => Bike.fromJson(bikeJson as Map<String, dynamic>),
-      )
-          .toList() ??
-          [],
+      bikes: bikes,
     );
   }
 }
