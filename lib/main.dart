@@ -4,26 +4,20 @@ import 'services/app_preferences.dart';
 import 'view/station_list_screen.dart';
 
 void main() async {
-  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // Set preferred orientations
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
 
-    // Initialize app preferences
     await AppPreferences.init();
 
-    // Run the app
     runApp(const MyApp());
   } catch (e, stackTrace) {
     debugPrint('Error during app initialization: $e');
     debugPrint('Stack trace: $stackTrace');
-
-    // If initialization fails, show error screen
     runApp(
       MaterialApp(
         home: Scaffold(
