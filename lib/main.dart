@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'services/app_preferences.dart';
 import 'view/station_list_screen.dart';
 
 void main() async {
@@ -11,8 +10,6 @@ void main() async {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-
-    await AppPreferences.init();
 
     runApp(const MyApp());
   } catch (e, stackTrace) {

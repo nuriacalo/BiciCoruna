@@ -11,12 +11,17 @@ class StationViewModel {
   static const Duration _cacheDuration = Duration(minutes: 1);
   static const Duration _vehicleTypesCacheDuration = Duration(hours: 24);
 
+  final http.Client _httpClient;
+
   List<Station>? _cachedStations;
   DateTime? _lastFetchTime;
   Exception? _lastError;
 
   Map<String, dynamic>? _cachedVehicleTypes;
   DateTime? _lastVehicleTypesFetchTime;
+
+  StationViewModel({http.Client? httpClient})
+      : _httpClient = httpClient ?? http.Client();
 
   Exception? get lastError => _lastError;
 
@@ -74,7 +79,7 @@ class StationViewModel {
   }
 
   Future<Map<String, dynamic>> _fetchData(String endpoint) async {
-    final response = await http
+    final response = await _httpClient
         .get(Uri.parse('$_baseUrl/$endpoint'))
         .timeout(_timeout);
 

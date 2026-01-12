@@ -36,7 +36,7 @@ void main() {
 
     test('Tipo de bici inválida', () {
       String tipoBici = 'Híbrida';
-      expect(['Eléctrica', 'Mecánica', 'Mixta'].contains(tipoBici), isFalse);
+      expect(['Eléctrica', 'Mecánica'].contains(tipoBici), isFalse);
     });
   });
 }
