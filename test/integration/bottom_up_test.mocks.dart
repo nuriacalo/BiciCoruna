@@ -7,6 +7,7 @@ import 'dart:async' as _i3;
 import 'dart:convert' as _i4;
 import 'dart:typed_data' as _i6;
 
+import 'package:bicicoruna/services/favorites_services.dart' as _i7;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i5;
@@ -217,4 +218,37 @@ class MockClient extends _i1.Mock implements _i2.Client {
     Invocation.method(#close, []),
     returnValueForMissingStub: null,
   );
+}
+
+/// A class which mocks [FavoritesService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockFavoritesService extends _i1.Mock implements _i7.FavoritesService {
+  MockFavoritesService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<Set<String>> getFavoriteIds() =>
+      (super.noSuchMethod(
+            Invocation.method(#getFavoriteIds, []),
+            returnValue: _i3.Future<Set<String>>.value(<String>{}),
+          )
+          as _i3.Future<Set<String>>);
+
+  @override
+  _i3.Future<bool> toggleFavorite(String? stationId) =>
+      (super.noSuchMethod(
+            Invocation.method(#toggleFavorite, [stationId]),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
+
+  @override
+  _i3.Future<bool> isFavorite(String? stationId) =>
+      (super.noSuchMethod(
+            Invocation.method(#isFavorite, [stationId]),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
 }

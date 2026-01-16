@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class FavoritesService {
   static const String _favoritesKey = 'favorite_stations';
   static FavoritesService? _instance;
-  SharedPreferences? _prefs;
 
   FavoritesService._();
 
@@ -13,19 +12,15 @@ class FavoritesService {
     return _instance!;
   }
 
-  Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
-  }
-
   Future<Set<String>> getFavoriteIds() async {
-    await _init();
-    final favorites = _prefs!.getStringList(_favoritesKey) ?? [];
+    final prefs = await SharedPreferences.getInstance();
+    final favorites = prefs.getStringList(_favoritesKey) ?? [];
     return favorites.toSet();
   }
 
   Future<bool> toggleFavorite(String stationId) async {
-    await _init();
-    final favorites = await getFavoriteIds();
+    final prefs = await SharedPreferences.getInstance();
+    final favorites = (prefs.getStringList(_favoritesKey) ?? []).toSet();
 
     if (favorites.contains(stationId)) {
       favorites.remove(stationId);
@@ -33,12 +28,12 @@ class FavoritesService {
       favorites.add(stationId);
     }
 
-    return await _prefs!.setStringList(_favoritesKey, favorites.toList());
+    return await prefs.setStringList(_favoritesKey, favorites.toList());
   }
 
   Future<bool> isFavorite(String stationId) async {
-    await _init();
-    final favorites = await getFavoriteIds();
+    final prefs = await SharedPreferences.getInstance();
+    final favorites = (prefs.getStringList(_favoritesKey) ?? []).toSet();
     return favorites.contains(stationId);
   }
 }
