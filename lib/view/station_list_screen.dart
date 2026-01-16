@@ -9,16 +9,17 @@ import '../widgets/error_view.dart';
 import 'package:intl/intl.dart';
 
 class StationListScreen extends StatefulWidget {
-  const StationListScreen({super.key});
+  final StationViewModel? viewModel;
+  const StationListScreen({super.key, this.viewModel});
 
   @override
   State<StationListScreen> createState() => _StationListScreenState();
 }
 
 class _StationListScreenState extends State<StationListScreen> {
-  final StationViewModel _viewModel = StationViewModel();
+  late final StationViewModel _viewModel;
   final FavoritesService _favoritesService = FavoritesService.instance;
-  // Remove unused _stationsFuture
+  // Eliminamos _stationsFuture que non se están usando
   Set<String> _favoriteIds = <String>{};
   List<Station> _stations = [];
   List<Station> _filteredStations = [];
@@ -29,6 +30,7 @@ class _StationListScreenState extends State<StationListScreen> {
   @override
   void initState() {
     super.initState();
+    _viewModel = widget.viewModel ?? StationViewModel();
     _loadStations();
   }
 

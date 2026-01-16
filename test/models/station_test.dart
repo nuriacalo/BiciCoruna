@@ -3,20 +3,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bicicoruna/model/station.dart';
 import 'package:bicicoruna/model/bike.dart';
 
-/// GRUPO 2: Tests del modelo Station
+/// GRUPO 2: Tests do modelo Station
 ///
-/// Relevancia: Station es el modelo central de la app. Los getters
-/// totalElectricBikes y totalMechanicalBikes son críticos para mostrar
-/// la disponibilidad real de bicis al usuario. Errores aquí impactan
-/// directamente en la experiencia del usuario.
+/// Relevancia: Station é o modelo central da app. Os getters
+/// totalElectricBikes e totalMechanicalBikes son críticos para mostrar
+/// a dispoñibilidade real de bicis ao usuario. Erros aquí impactan
+/// directamente na experiencia do usuario.
 void main() {
   group('Station - Getters de conteo de bicicletas', () {
-    /// Test 1: Verifica el conteo correcto cuando hay lista de bikes
+    /// Test 1: Verifica o conteo correcto cando hai lista de bikes
 
     test(
       'totalElectricBikes y totalMechanicalBikes deben contar correctamente',
       () {
-        // Arrange
         final bikes = [
           Bike(id: 'E1', type: 'Eléctrica', count: 3),
           Bike(id: 'M1', type: 'Mecánica', count: 5),
@@ -47,16 +46,14 @@ void main() {
           bikes: bikes,
         );
 
-        // Act & Assert
         expect(station.totalElectricBikes, 5); // 3 + 2
         expect(station.totalMechanicalBikes, 9); // 5 + 4
       },
     );
 
-    /// Test 2: Verifica que devuelve 0 cuando la lista de bikes está vacía
+    /// Test 2: Verifica que devolve 0 cando a lista de bikes está baleira
 
     test('debe devolver 0 cuando la lista de bikes está vacía', () {
-      // Arrange
       final station = Station(
         id: '2',
         name: 'Empty Station',
@@ -80,17 +77,15 @@ void main() {
         bikes: [], // Lista vacía
       );
 
-      // Act & Assert
       expect(station.totalElectricBikes, 0);
       expect(station.totalMechanicalBikes, 0);
     });
 
-    /// Test 3: Verifica fallback a vehicleTypesAvailable cuando bikes está vacío
+    /// Test 3: Verifica fallback a vehicleTypesAvailable cando bikes está baleira
 
     test(
       'debe usar vehicleTypesAvailable como fallback cuando bikes está vacío',
       () {
-        // Arrange
         final station = Station(
           id: '3',
           name: 'Fallback Station',
@@ -122,10 +117,9 @@ void main() {
   });
 
   group('Station.fromJson - Constructor', () {
-    /// Test 4: Verifica el parsing correcto con datos válidos completos
+    /// Test 4: Verifica o parsing correcto con datos válidos completos
 
     test('debe crear Station correctamente con datos JSON válidos', () {
-      // Arrange
       final json = {
         'station_id': '123',
         'name': 'Plaza de María Pita',
@@ -151,10 +145,8 @@ void main() {
         'is_returning': true,
       };
 
-      // Act
       final station = Station.fromJson(json);
 
-      // Assert
       expect(station.id, '123');
       expect(station.name, 'Plaza de María Pita');
       expect(station.lat, 43.3713);
@@ -169,10 +161,9 @@ void main() {
       expect(station.bikes.length, 2);
     });
 
-    /// Test 5: Verifica el manejo robusto de campos null o vacíos
+    /// Test 5: Verifica o manexo robusto de campos null ou baleiros
 
     test('debe manejar campos null o vacíos sin crashear', () {
-      // Arrange
       final json = {
         'station_id': '456',
         // name: null (será "Unknown Station")
@@ -184,10 +175,9 @@ void main() {
         // vehicle_types_available: null (será {})
       };
 
-      // Act
       final station = Station.fromJson(json);
 
-      // Assert - debe usar valores por defecto sin crashear
+      // Assert - debe usar valores por defecto sen crashear
       expect(station.id, '456');
       expect(station.name, 'Unknown Station');
       expect(station.lat, 0.0);
@@ -198,7 +188,7 @@ void main() {
       expect(station.bikes, isEmpty);
     });
 
-    /// Test 6: Verifica el parsing de tipos incorrectos (ej: string a int)
+    /// Test 6: Verifica o parsing de tipos incorrectos (ex: string a int)
 
     test('debe parsear correctamente tipos inesperados (string a int)', () {
       // Arrange
@@ -224,10 +214,9 @@ void main() {
         'is_returning': true,
       };
 
-      // Act
       final station = Station.fromJson(json);
 
-      // Assert - debe convertir strings a ints correctamente
+      // Assert - debe converter strings a ints correctamente
       expect(station.postCode, 15002);
       expect(station.capacity, 30);
       expect(station.numBikesAvailable, 15);
