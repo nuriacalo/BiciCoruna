@@ -31,7 +31,6 @@ void main() {
     });
 
     /// Test 3: Verifica que typeId clasifica correctamente cando propulsionType é null
-
     test(
       'debe clasificar como eléctrica basándose en typeId cuando propulsionType es null',
       () {
@@ -52,7 +51,6 @@ void main() {
     );
 
     /// Test 4: Verifica que typeId descoñecidos clasifican como mecánica
-
     test('debe clasificar como mecánica para typeId desconocidos', () {
       final bike1 = Bike.fromType('BIKE', 8);
       final bike2 = Bike.fromType('1', 12);

@@ -21,7 +21,7 @@ import 'top_down_test.mocks.dart';
 // e imos integrando capas reais progresivamente
 
 void main() {
-  // NIVEL 1: UI aillada - Todo simulado
+  // NIVEL 1: UI illada - Todo simulado
   group('Nivel 1 - UI Aislada: Toda la lógica simulada', () {
     late MockStationViewModel mockViewModel;
     late MockFavoritesService mockFavoritesService;

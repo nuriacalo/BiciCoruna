@@ -12,7 +12,6 @@ import 'package:bicicoruna/model/bike.dart';
 void main() {
   group('Station - Getters de conteo de bicicletas', () {
     /// Test 1: Verifica o conteo correcto cando hai lista de bikes
-
     test(
       'totalElectricBikes y totalMechanicalBikes deben contar correctamente',
       () {
